@@ -1,0 +1,21 @@
+version: 2.1
+
+orbs:
+  ruby: circleci/ruby@1.1.2
+
+jobs:
+  build:
+    docker:
+      - image: cimg/ruby:3.0.0 # Specify the Ruby version
+    steps:
+      - checkout
+      - ruby/install-deps # Install dependencies
+      - run:
+          name: Run tests
+          command: bundle exec rspec # Run RSpec tests
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
