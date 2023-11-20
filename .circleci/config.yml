@@ -6,7 +6,7 @@ orbs:
 jobs:
   build:
     docker:
-      - image: cimg/ruby:3.0.0 # Specify the Ruby version
+      - image: cimg/ruby:3.2.0 # Specify the Ruby version
     steps:
       - checkout
       - ruby/install-deps # Install dependencies
