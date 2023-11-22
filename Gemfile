@@ -38,6 +38,12 @@ group :development, :test do
   gem "debug", platforms: %i[ mri mingw x64_mingw ]
   gem 'rspec-rails', '~> 5.0.0'
   gem 'rubocop', require: false
+  gem 'rubocop-rspec', require: false
+  gem 'traceroute', require: false
+  gem 'brakeman', require: false
+  gem 'bundler-audit', require: false
+  gem 'rails_best_practices', require: false
+  gem 'simplecov', require: false
 end
 
 group :development do

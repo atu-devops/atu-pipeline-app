@@ -16,7 +16,21 @@ jobs:
       - run:
           name: Run RuboCop
           command: bundle exec rubocop # Run RuboCop static code analysis
-
+      - run:
+          name: Run Brakeman
+          command: bundle exec brakeman
+      - run:
+          name: Run Ruby Critic
+          command: bundle exec rubycritic
+      - run:
+          name: Check Routes with Traceroute
+          command: bundle exec rake traceroute
+      - run:
+          name: Check bundle for vulnerabilities
+          command: bundle audit check --update
+      - run:
+          name: Run Rails Best Practices
+          command: bundle exec rails_best_practices
 
 workflows:
   version: 2
