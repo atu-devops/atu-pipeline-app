@@ -20,9 +20,6 @@ jobs:
           name: Run Brakeman
           command: bundle exec brakeman
       - run:
-          name: Run Ruby Critic
-          command: bundle exec rubycritic
-      - run:
           name: Check Routes with Traceroute
           command: bundle exec rake traceroute
       - run:
