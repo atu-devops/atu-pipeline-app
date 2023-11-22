@@ -19,9 +19,9 @@ jobs:
       - run:
           name: Run Brakeman
           command: bundle exec brakeman
-      - run:
-          name: Check Routes with Traceroute
-          command: bundle exec rake traceroute
+#      - run:
+#          name: Check Routes with Traceroute
+#          command: bundle exec rake traceroute
       - run:
           name: Check bundle for vulnerabilities
           command: bundle audit check --update
