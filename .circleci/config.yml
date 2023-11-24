@@ -31,7 +31,9 @@ jobs:
       - run:
           name: Deploy to Heroku
           command: |
-            git push https://heroku:ENV["HEROKU_API_KEY"]@git.heroku.com/atu-pipeline.git main
+            git push https://heroku:${HEROKU_API_KEY}@git.heroku.com/atu-pipeline.git $CIRCLE_BRANCH:main
+
+
 
 workflows:
   version: 2
