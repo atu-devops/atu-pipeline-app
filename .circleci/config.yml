@@ -33,7 +33,7 @@ jobs:
       - image: cimg/ruby:3.0.0 # Specify your Ruby version
     steps:
       - checkout
-      - heroku/install
+      - ruby/install-deps # Install dependencies
       - run:
           name: Deploy to Heroku
           command: |
