@@ -30,7 +30,7 @@ jobs:
           command: bundle exec rails_best_practices
   deploy:
     docker:
-      - image: cimg/ruby:3.0.0 # Specify your Ruby version
+      - image: cimg/ruby:3.2.0 # Specify your Ruby version
     steps:
       - checkout
       - ruby/install-deps # Install dependencies
