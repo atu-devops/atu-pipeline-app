@@ -28,15 +28,30 @@ jobs:
       - run:
           name: Run Rails Best Practices
           command: bundle exec rails_best_practices
+  deploy:
+    docker:
+      - image: cimg/ruby:3.0.0 # Specify your Ruby version
+    steps:
+      - checkout
+      - heroku/install
       - run:
           name: Deploy to Heroku
           command: |
             git push https://heroku:${HEROKU_API_KEY}@git.heroku.com/atu-pipeline.git $CIRCLE_BRANCH:main
+        
+        
 
 
 
 workflows:
   version: 2
-  build_and_test:
+  build_and_deploy:
     jobs:
       - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - main
