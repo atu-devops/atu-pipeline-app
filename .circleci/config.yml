@@ -28,7 +28,35 @@ jobs:
       - run:
           name: Run Rails Best Practices
           command: bundle exec rails_best_practices
-  deploy:
+
+  deploy_staging:
+    docker:
+      - image: cimg/ruby:3.2.0 # Specify your Ruby version
+    steps:
+      - checkout
+      - ruby/install-deps # Install dependencies
+      - run:
+          name: Deploy to Heroku
+          command: |
+            git push https://heroku:${HEROKU_API_KEY}@git.heroku.com/atu-pipeline-staging.git $CIRCLE_BRANCH:develop
+
+  automated_tests:
+    docker:
+      - image: cimg/ruby:3.2.0 # Specify your Ruby version
+    steps:
+      - checkout
+      - ruby/install-deps # Install dependencies
+      - run:
+          name: Run tests
+          command: bundle exec rspec # Run RSpec tests
+      - run:
+          name: Run RuboCop
+          command: bundle exec rubocop # Run RuboCop static code analysis
+      - run:
+          name: Run Brakeman
+          command: bundle exec brakeman
+
+  deploy_production:
     docker:
       - image: cimg/ruby:3.2.0 # Specify your Ruby version
     steps:
@@ -39,19 +67,29 @@ jobs:
           command: |
             git push https://heroku:${HEROKU_API_KEY}@git.heroku.com/atu-pipeline.git $CIRCLE_BRANCH:main
         
-        
-
-
 
 workflows:
   version: 2
   build_and_deploy:
     jobs:
       - build
-      - deploy:
+      - deploy_staging:
           requires:
             - build
           filters:
             branches:
               only:
-                - main
+                - develop
+      - automated_tests:
+          requires:
+            - deploy_staging
+      - deploy_production:
+          requires:
+            - automated_tests
+          filters:
+            branches:
+              only:
+                - develop
+
+
+
