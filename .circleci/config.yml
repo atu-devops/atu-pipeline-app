@@ -28,6 +28,10 @@ jobs:
       - run:
           name: Run Rails Best Practices
           command: bundle exec rails_best_practices
+      - run:
+          name: Deploy to Heroku
+          command: |
+            git push https://heroku:ENV["HEROKU_API_KEY"]@git.heroku.com/atu-pipeline.git main
 
 workflows:
   version: 2
