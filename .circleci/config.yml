@@ -70,7 +70,7 @@ jobs:
       - run:
           name: Create Pull Request
           command: |
-            curl -X POST -H "Authorization: token ${GITHUB_TOKEN}" -d '{"title":"Automated PR","body":"Automated PR","head":"develop","base":"main"}' https://api.github.com/repos/atu-pipeline/atu-pipeline/pulls
+            curl -X POST -H "Authorization: token ${GITHUB_TOKEN}" -d '{"title":"Automated PR","body":"Automated PR","head":"develop","base":"main"}' https://api.github.com/repos/atu-devops/atu-pipeline-app/pulls
                       
 
   deploy_production:
