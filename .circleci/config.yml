@@ -4,101 +4,69 @@ orbs:
   ruby: circleci/ruby@1.1.2
 
 jobs:
-
   automated_tests:
     docker:
-      - image: cimg/ruby:3.2.0 # Specify your Ruby version
+      - image: cimg/ruby:3.2.0
     steps:
       - checkout
-      - ruby/install-deps # Install dependencies
-      - run:
-          name: Run tests
-          command: bundle exec rspec # Run RSpec tests
+      - ruby/install-deps
+      - run: bundle exec rspec
 
   code_analysis:
     docker:
-      - image: cimg/ruby:3.2.0 # Specify the Ruby version
+      - image: cimg/ruby:3.2.0
     steps:
       - checkout
-      - ruby/install-deps # Install dependencies
-      - run:
-          name: Run RuboCop
-          command: bundle exec rubocop # Run RuboCop static code analysis
-      - run:
-          name: Run Brakeman
-          command: bundle exec brakeman
-#      - run:
-#          name: Check Routes with Traceroute
-#          command: bundle exec rake traceroute
-      - run:
-          name: Check bundle for vulnerabilities
-          command: bundle exec bundle-audit check --update
-      - run:
-          name: Run Rails Best Practices
-          command: bundle exec rails_best_practices
+      - ruby/install-deps
+      - run: bundle exec rubocop
+      - run: bundle exec brakeman
+      # - run: bundle exec rake traceroute
+      - run: bundle exec bundle-audit check --update
+      - run: bundle exec rails_best_practices
 
   deploy_staging:
     docker:
-      - image: cimg/ruby:3.2.0 # Specify your Ruby version
+      - image: cimg/ruby:3.2.0
     steps:
       - checkout
-      - ruby/install-deps # Install dependencies
+      - ruby/install-deps
       - run:
-          name: Deploy to Heroku
+          name: Deploy to Heroku Staging
           command: |
-            git push https://heroku:${HEROKU_API_KEY}@git.heroku.com/atu-pipeline-staging.git $CIRCLE_BRANCH:develop
-      - run:
-          name: Wait for Approval
-          command: echo "Waiting for approval to merge develop into main"
+            git push https://heroku:${HEROKU_API_KEY}@git.heroku.com/atu-pipeline-staging.git $CIRCLE_BRANCH
 
   hold_for_approval:
     docker:
-      - image: cimg/ruby:3.2.0 # Specify your Ruby version
+      - image: cimg/ruby:3.2.0
     steps:
-      - checkout
-      - ruby/install-deps # Install dependencies
       - run:
-          name: Wait for Approval
-          command: echo "Waiting for approval to merge develop into main"
+          name: Manual Approval Required
+          command: echo "Manual approval required to merge develop into main."
 
   create_pull_request:
     docker:
-      - image: cimg/ruby:3.2.0 # Specify your Ruby version
+      - image: cimg/ruby:3.2.0
     steps:
       - checkout
-      - ruby/install-deps # Install dependencies
+      - ruby/install-deps
       - run:
-          name: Create Pull Request
+          name: Create Pull Request on GitHub
           command: |
-            curl -X POST -H "Authorization: token ${GITHUB_TOKEN}" -d '{"title":"Automated PR","body":"Automated PR","head":"develop","base":"main"}' https://api.github.com/repos/atu-devops/atu-pipeline-app/pulls
-                      
+            curl -X POST -H "Authorization: token ${GITHUB_TOKEN}" -d '{"title":"Automated PR to Merge Develop into Main","body":"This PR is created automatically by the CI pipeline.","head":"develop","base":"main"}' https://api.github.com/repos/atu-devops/atu-pipeline-app/pulls
 
   deploy_production:
     docker:
-      - image: cimg/ruby:3.2.0 # Specify your Ruby version
+      - image: cimg/ruby:3.2.0
     steps:
       - checkout
-      - ruby/install-deps # Install dependencies
+      - ruby/install-deps
       - run:
-          name: Deploy to Heroku
+          name: Deploy to Heroku Production
           command: |
-            git push https://heroku:${HEROKU_API_KEY}@git.heroku.com/atu-pipeline.git $CIRCLE_BRANCH:main
-        
+            git push https://heroku:${HEROKU_API_KEY}@git.heroku.com/atu-pipeline.git $CIRCLE_BRANCH
 
 workflows:
   version: 2
-  test_and_analyze_developers_branches:
-    jobs:
-      - automated_tests
-      - code_analysis:
-          requires:
-            - automated_tests
-          filters:
-            branches:
-              ignore:
-                - develop
-                - main
-                - "/^hotfix-.*$/"
 
   test_analyze_and_deploy:
     jobs:
@@ -108,7 +76,6 @@ workflows:
             - automated_tests
       - deploy_staging:
           requires:
-            - automated_tests
             - code_analysis
       - hold_for_approval:
           type: approval
@@ -125,13 +92,11 @@ workflows:
             branches:
               only:
                 - develop
+
+  deploy_production:
+    jobs:
       - deploy_production:
-          requires:
-            - automated_tests
           filters:
             branches:
               only:
                 - main
-
-
-
