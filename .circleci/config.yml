@@ -95,11 +95,20 @@ workflows:
 
   deploy_staging:
     jobs:
-      - automated_tests
+      - automated_tests:
+          filters:
+            branches:
+              only: develop
       - code_analysis:
+          filters:
+            branches:
+              only: develop
           requires:
               - automated_tests
       - deploy_staging:
+          filters:
+            branches:
+              only: develop
           requires:
               - code_analysis
           filters:
@@ -107,6 +116,9 @@ workflows:
               only: develop
       - hold_for_approval:
           type: approval
+          filters:
+            branches:
+              only: develop
           requires:
             - deploy_staging
           filters:
