@@ -76,7 +76,7 @@ jobs:
 workflows:
   version: 2
 
-  test_and_analyze_development_branches
+  test_and_analyze_development_branches:
     jobs:
       - automated_tests
       - code_analysis:
