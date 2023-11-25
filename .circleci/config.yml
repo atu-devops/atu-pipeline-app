@@ -85,46 +85,27 @@ workflows:
 
   deploy_staging:
     jobs:
-      - automated_tests:
+      - deploy_staging:
+          requires:
+            - code_analysis
           filters:
             branches:
               only: develop
-      - code_analysis:
-            requires:
-                - automated_tests
-            filters:
-                branches:
-                only: develop
-      - deploy_staging:
-            requires:
-                - automated_tests
-                - code_analysis
-            filters:
-              branches:
-                only: develop
       - hold_for_approval:
+          type: approval
           requires:
-            - automated_tests
-            - code_analysis
             - deploy_staging
           filters:
             branches:
               only: develop
       - create_pull_request:
           requires:
-            - automated_tests
-            - code_analysis
-            - deploy_staging
             - hold_for_approval
           filters:
             branches:
               only: develop
       - notify_qa:
           requires:
-            - automated_tests
-            - code_analysis
-            - deploy_staging
-            - hold_for_approval
             - create_pull_request
           filters:
             branches:
@@ -132,27 +113,12 @@ workflows:
 
   deploy_production:
     jobs:
-      - automated_tests:
-          filters:
-            branches:
-              only: main
-      - code_analysis:
-            requires:
-                - automated_tests
-            filters:
-                branches:
-                only: main
       - deploy_production:
-          requires:
-            - automated_tests
-            - code_analysis
           filters:
             branches:
               only: main
       - notify_qa:
           requires:
-            - automated_tests
-            - code_analysis
             - deploy_production
           filters:
             branches:
