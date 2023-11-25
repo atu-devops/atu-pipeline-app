@@ -91,7 +91,7 @@ workflows:
     filters:
       branches:
         only:
-          - develop
+          - "develop"
 
   deploy_production:
     jobs:
@@ -99,4 +99,4 @@ workflows:
     filters:
       branches:
         only:
-          - main
+          - "main"
