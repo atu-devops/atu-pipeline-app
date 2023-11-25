@@ -33,7 +33,7 @@ jobs:
       - run:
           name: Deploy to Heroku Staging
           command: |
-            git push https://heroku:${HEROKU_API_KEY}@git.heroku.com/atu-pipeline-staging.git $CIRCLE_BRANCH
+            git push https://heroku:${HEROKU_API_KEY}@git.heroku.com/atu-pipeline-staging.git $CIRCLE_BRANCH:develop
 
   hold_for_approval:
     docker:
@@ -63,31 +63,27 @@ jobs:
       - run:
           name: Deploy to Heroku Production
           command: |
-            git push https://heroku:${HEROKU_API_KEY}@git.heroku.com/atu-pipeline.git $CIRCLE_BRANCH
+            git push https://heroku:${HEROKU_API_KEY}@git.heroku.com/atu-pipeline.git $CIRCLE_BRANCH:main
 
 workflows:
   version: 2
 
-  test_analyze_and_deploy_staging:
+  test_and_analyze:
     jobs:
-      - automated_tests:
-          filters:
-            branches:
-              only: develop
+      - automated_tests
       - code_analysis:
           requires:
             - automated_tests
-          filters:
-            branches:
-              only: develop
+
+  deploy_staging:
+    jobs:
       - deploy_staging:
           requires:
-            - code_analysis
+            - test_and_analyze
           filters:
             branches:
               only: develop
       - hold_for_approval:
-          type: approval
           requires:
             - deploy_staging
           filters:
@@ -103,6 +99,8 @@ workflows:
   deploy_production:
     jobs:
       - deploy_production:
+          requires:
+            - test_and_analyze
           filters:
             branches:
               only: main
