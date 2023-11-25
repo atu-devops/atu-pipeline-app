@@ -95,7 +95,7 @@ workflows:
 
   deploy_production:
     jobs:
-      - deploy_production:
+      - deploy_production
     filters:
       branches:
         only:
