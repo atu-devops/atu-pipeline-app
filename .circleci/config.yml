@@ -78,17 +78,17 @@ workflows:
 
   test_and_analyze_development_branches:
     jobs:
-      - automated_tests
+      - automated_tests:
+          filters:
+            branches:
+              ignore:
+                - develop
+                - main
       - code_analysis:
           requires:
             - automated_tests
           filters:
             branches:
-              only:
-                - /^feature\/.*$/
-                - /^bugfix\/.*$/
-                - /^hotfix\/.*$/
-                - /^release\/.*$/
               ignore:
                 - develop
                 - main
