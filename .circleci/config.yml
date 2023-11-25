@@ -86,8 +86,6 @@ workflows:
   deploy_staging:
     jobs:
       - deploy_staging:
-          requires:
-            - code_analysis
           filters:
             branches:
               only: develop
