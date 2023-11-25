@@ -95,11 +95,10 @@ workflows:
 
   deploy_staging:
     jobs:
-      - jobs:
-          - automated_tests
-          - code_analysis:
-              requires:
-                - automated_tests
+      - automated_tests
+      - code_analysis:
+          requires:
+              - automated_tests
       - deploy_staging:
           requires:
               - code_analysis
