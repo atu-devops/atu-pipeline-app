@@ -108,7 +108,7 @@ workflows:
             - automated_tests
       - deploy_staging:
           requires:
-            - build
+            - automated_tests
             - code_analysis
       - hold_for_approval:
           type: approval
