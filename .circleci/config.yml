@@ -33,7 +33,7 @@ jobs:
       - run:
           name: Deploy to Heroku Staging
           command: |
-            git push https://heroku:${HEROKU_API_KEY}@git.heroku.com/atu-pipeline-staging.git $CIRCLE_BRANCH
+            git push https://heroku:${HEROKU_API_KEY}@git.heroku.com/atu-pipeline-staging.git $CIRCLE_BRANCH:develop
 
   hold_for_approval:
     docker:
@@ -63,12 +63,37 @@ jobs:
       - run:
           name: Deploy to Heroku Production
           command: |
-            git push https://heroku:${HEROKU_API_KEY}@git.heroku.com/atu-pipeline.git $CIRCLE_BRANCH
+            git push https://heroku:${HEROKU_API_KEY}@git.heroku.com/atu-pipeline.git $CIRCLE_BRANCH:main
+
+  notify_qa:
+    docker:
+      - image: cimg/ruby:3.2.0
+    steps:
+      - run:
+          name: Notify QA
+          command: echo "Notify QA that a new version is available for testing."
 
 workflows:
   version: 2
 
-  test_analyze_and_deploy_staging:
+  test_and_analyze_development_branches:
+    jobs:
+      - automated_tests:
+          filters:
+            branches:
+              ignore:
+                - develop
+                - main
+      - code_analysis:
+          requires:
+            - automated_tests
+          filters:
+            branches:
+              ignore:
+                - develop
+                - main
+
+  deploy_staging:
     jobs:
       - automated_tests:
           filters:
@@ -76,13 +101,13 @@ workflows:
               only: develop
       - code_analysis:
           requires:
-            - automated_tests
+              - automated_tests
           filters:
             branches:
               only: develop
       - deploy_staging:
           requires:
-            - code_analysis
+              - code_analysis
           filters:
             branches:
               only: develop
@@ -99,10 +124,22 @@ workflows:
           filters:
             branches:
               only: develop
+      - notify_qa:
+          requires:
+            - create_pull_request
+          filters:
+            branches:
+              only: develop
 
   deploy_production:
     jobs:
       - deploy_production:
+          filters:
+            branches:
+              only: main
+      - notify_qa:
+          requires:
+            - deploy_production
           filters:
             branches:
               only: main
