@@ -75,6 +75,10 @@ workflows:
           branches:
             only:
               - "develop"
+              - develop
+            ignore:
+              - "main"
+              - main
       - code_analysis:
           requires:
             - automated_tests
