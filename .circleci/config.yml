@@ -79,7 +79,8 @@ workflows:
     jobs:
       - deploy_staging:
           requires:
-            - test_and_analyze
+            - automated_tests
+            - code_analysis
           filters:
             branches:
               only: develop
@@ -100,7 +101,8 @@ workflows:
     jobs:
       - deploy_production:
           requires:
-            - test_and_analyze
+            - automated_tests
+            - code_analysis
           filters:
             branches:
               only: main
