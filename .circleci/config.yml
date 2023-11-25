@@ -68,9 +68,13 @@ jobs:
 workflows:
   version: 2
 
-  test_analyze_and_deploy:
+  test_analyze_and_deploy_staging:
     jobs:
-      - automated_tests
+      - automated_tests:
+        filters:
+          branches:
+            only:
+              - "develop"
       - code_analysis:
           requires:
             - automated_tests
@@ -81,17 +85,9 @@ workflows:
           type: approval
           requires:
             - deploy_staging
-          filters:
-            branches:
-              only:
-                - develop
       - create_pull_request:
           requires:
             - hold_for_approval
-          filters:
-            branches:
-              only:
-                - develop
 
   deploy_production:
     jobs:
@@ -99,4 +95,4 @@ workflows:
           filters:
             branches:
               only:
-                - main
+                - "main"
