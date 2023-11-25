@@ -71,14 +71,7 @@ workflows:
   test_analyze_and_deploy_staging:
     jobs:
       - automated_tests:
-        filters:
-          branches:
-            only:
-              - "develop"
-              - develop
-            ignore:
-              - "main"
-              - main
+        filters: { branches: { only: ['develop'], ignore: ['main'] } }
       - code_analysis:
           requires:
             - automated_tests
@@ -96,7 +89,4 @@ workflows:
   deploy_production:
     jobs:
       - deploy_production:
-          filters:
-            branches:
-              only:
-                - "main"
+          filters: { branches: { only: ['main'] } }
