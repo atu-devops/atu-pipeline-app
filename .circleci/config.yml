@@ -76,16 +76,33 @@ jobs:
 workflows:
   version: 2
 
-  test_and_analyze:
+  test_and_analyze_development_branches
     jobs:
       - automated_tests
       - code_analysis:
           requires:
             - automated_tests
+          filters:
+            branches:
+              only:
+                - /^feature\/.*$/
+                - /^bugfix\/.*$/
+                - /^hotfix\/.*$/
+                - /^release\/.*$/
+              ignore:
+                - develop
+                - main
 
   deploy_staging:
     jobs:
+      - jobs:
+          - automated_tests
+          - code_analysis:
+              requires:
+                - automated_tests
       - deploy_staging:
+          requires:
+              - code_analysis
           filters:
             branches:
               only: develop
