@@ -119,22 +119,22 @@ workflows:
           filters:
             branches:
               only: develop
+      - notify_qa:
+          requires:
+            - deploy_staging
+          filters:
+            branches:
+              only: develop
       - hold_for_approval:
           type: approval
           requires:
-            - deploy_staging
+            - notify_qa
           filters:
             branches:
               only: develop
       - create_pull_request:
           requires:
             - hold_for_approval
-          filters:
-            branches:
-              only: develop
-      - notify_qa:
-          requires:
-            - create_pull_request
           filters:
             branches:
               only: develop
