@@ -37,10 +37,9 @@ jobs:
 
   capybara_tests:
     docker:
-      - image: cimg/ruby:3.2.0-node-browsers
+      - image: cimg/ruby:3.2.0-browsers
     steps:
       - checkout
-      - ruby/install-deps
       - run:
           name: Run Capybara Tests
           command: |
