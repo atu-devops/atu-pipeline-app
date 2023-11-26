@@ -3,8 +3,11 @@
 <h1>Pipeline Elements</h1>
 <p>Welcome to the Pipeline Elements page!</p>
 <p>We will list the pipeline elements here</p>
-<p>Has CircleCI deployed to Heroku?</p>
-<p>Has CircleCI deployed to Heroku? With split jobs?</p>
-<p>This is the develop branch</p>
-<p>Forcing a build to see if the main branch runs</p>
-<p>Update on feature/my_new_feature3</p>
+<% pipeline_elements = ["Github", "CircleCI", "Rspec", "Heroku", "Staging", "Capybara", "Production", "Scout"] %>
+<ul>
+  <div class="pipeline_elements">
+    <% pipeline_elements.each do |pipeline_element| %>
+      <li><%= pipeline_element %></li>
+    <% end %>
+  </div>
+</ul>

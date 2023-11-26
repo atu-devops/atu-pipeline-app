@@ -47,6 +47,7 @@ group :development, :test do
   gem 'rubocop-rspec', require: false
   gem 'simplecov', require: false
   gem 'traceroute', require: false
+  gem 'capybara', require: false
 end
 
 group :development do
