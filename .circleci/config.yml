@@ -52,8 +52,16 @@ jobs:
       - run:
           name: Create Pull Request on GitHub
           command: |
-            curl -X POST -H "Authorization: token ${GITHUB_TOKEN}" -d '{"title":"Automated PR to Merge Develop into Main","body":"This PR is created automatically by the CI pipeline.","head":"develop","base":"main"}' https://api.github.com/repos/atu-devops/atu-pipeline-app/pulls
+#            curl -X POST -H "Authorization: token ${GITHUB_TOKEN}" -d '{"title":"Automated PR to Merge Develop into Main","body":"This PR is created automatically by the CI pipeline.","head":"develop","base":"main"}' https://api.github.com/repos/atu-devops/atu-pipeline-app/pulls
+            BRANCH_NAME=$(echo ${CIRCLE_BRANCH} | sed 's/[^a-zA-Z0-9]/-/g')
+            PR_TITLE="Automated PR from ${BRANCH_NAME}"
+            PR_BODY="This PR is created automatically from branch ${BRANCH_NAME}."
 
+            curl -X POST \
+              -H "Authorization: token ${GITHUB_TOKEN}" \
+              -H "Content-Type: application/json" \
+              -d "{\"title\":\"${PR_TITLE}\", \"body\":\"${PR_BODY}\", \"head\":\"${CIRCLE_BRANCH}\", \"base\":\"main\"}" \
+              https://api.github.com/repos/atu-devops/atu-pipeline-app/pulls
   deploy_production:
     docker:
       - image: cimg/ruby:3.2.0
