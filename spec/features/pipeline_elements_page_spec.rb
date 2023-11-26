@@ -25,6 +25,5 @@ RSpec.describe 'Pipeline Elements Page', type: :feature do
       expect(page).to have_content('Production')
       expect(page).to have_content('Scout')
     end
-
   end
 end
