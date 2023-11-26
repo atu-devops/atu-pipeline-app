@@ -135,7 +135,7 @@ workflows:
                 - deploy_staging
             filters:
                 branches:
-                only: develop
+                  only: develop
       - notify_qa:
           requires:
             - capybara_tests
