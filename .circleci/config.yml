@@ -43,7 +43,6 @@ jobs:
       - run:
           name: Run Capybara Tests
           command: |
-#            export BASE_URL=https://atu-pipeline-staging.herokuapp.com
             bundle exec rspec spec/features          
 
   hold_for_approval:
