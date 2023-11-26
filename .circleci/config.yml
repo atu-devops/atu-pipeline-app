@@ -55,7 +55,7 @@ jobs:
             PR_TITLE="Automated PR to Merge ${CIRCLE_BRANCH} into Main"
             PR_BODY="This PR is created automatically by the CI pipeline, from branch ${CIRCLE_BRANCH}."
             PR_HEAD="${CIRCLE_BRANCH}"
-            PR_BASE="develop"
+            PR_BASE="main"
             
             curl -X POST -H "Authorization: token ${GITHUB_TOKEN}" \
             -H "Content-Type: application/json" \
