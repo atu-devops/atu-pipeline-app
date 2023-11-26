@@ -55,7 +55,7 @@ jobs:
             PR_TITLE="Automated PR to Merge Develop into Main"
             PR_BODY="This PR is created automatically by the CI pipeline, from ${BRANCH_NAME}"
             PR_HEAD="${CIRCLE_BRANCH}"
-            PR_BASE="develop"
+            PR_BASE="main"
             curl -X POST -H "Authorization: token ${GITHUB_TOKEN}" -d '{"title:${PR_TITLE}","body:${PR_BODY}","head":${BRANCH_NAME}","base:${PR_BASE}"}' https://api.github.com/repos/atu-devops/atu-pipeline-app/pulls
 
   deploy_production:
