@@ -24,6 +24,33 @@ jobs:
       - run: bundle exec bundle-audit check --update
       - run: bundle exec rails_best_practices
 
+  generate_and_scan_sbom:
+    docker:
+      - image: cimg/ruby:3.2.0
+    steps:
+      - checkout
+      - ruby/install-deps
+      - run:
+          name: Print Working Directory
+          command: pwd
+      - run:
+          name: Install Syft
+          command: |
+            mkdir -p $HOME/bin
+            curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b $HOME/bin
+            echo 'export PATH=$HOME/bin:$PATH' >> $BASH_ENV
+      - run:
+          name: Install Grype
+          command: |
+            curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b $HOME/bin
+            echo 'export PATH=$HOME/bin:$PATH' >> $BASH_ENV
+      - run:
+          name: Generate SBOM
+          command: syft packages dir:/home/circleci/project -o json > sbom.json
+      - run:
+          name: Scan SBOM
+          command: grype sbom:./sbom.json -o json
+
   deploy_staging:
     docker:
       - image: cimg/ruby:3.2.0
@@ -45,7 +72,7 @@ jobs:
           name: Run Capybara Tests
           command: |
             export BASE_URL=https://atu-pipeline-staging.herokuapp.com
-            bundle exec rspec spec/features          
+            bundle exec rspec spec/features
 
   hold_for_approval:
     docker:
@@ -107,6 +134,14 @@ workflows:
       - code_analysis:
           requires:
             - automated_tests
+          filters:
+            branches:
+              ignore:
+                - develop
+                - main
+      - generate_and_scan_sbom:
+          requires:
+            - code_analysis
           filters:
             branches:
               ignore:
