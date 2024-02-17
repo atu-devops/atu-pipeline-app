@@ -1,0 +1,23 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+  username: <%= ENV['POSTGRES_USER'] %>
+  password: <%= ENV['POSTGRES_PASSWORD'] %>
+  host: localhost
+  port: 5432
+
+development:
+  <<: *default
+  database: wednesdays_wicked_adventure_development
+
+test:
+  <<: *default
+  database: wednesdays_wicked_adventure_test
+
+#production:
+#  <<: *default
+#  database: wednesdays_wicked_adventure_production
+#  username: your_production_postgresql_username
+#  password: your_production_postgresql_password
+#  host: your_production_postgresql_host
